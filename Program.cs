@@ -12,8 +12,8 @@ namespace Bootstrap
         static readonly string[] projects = { "SparkBoot", "SparkKernel" };
         static readonly Dictionary<string, string> files = new Dictionary<string, string>()
         {
-            { "EFI\\BOOT\\BOOTX64.EFI", "SparkBoot\\BOOTX64.EFI" },
-            { "system\\kernel.bin", "SparkKernel\\kernel.bin" }
+            { "EFI/BOOT/BOOTX64.EFI", "SparkBoot/BOOTX64.EFI" },
+            { "system/kernel.bin", "SparkKernel/kernel.bin" }
         };
 
         static int Main(string[] args)
@@ -130,8 +130,20 @@ namespace Bootstrap
                 VolumeIdentifier = "SPARK_OS"
             };
 
-            foreach (KeyValuePair<string, string> item in files)
-                builder.AddFile(item.Key, $"out/{target}/{item.Value}");
+            try
+            {
+                foreach (KeyValuePair<string, string> item in files)
+                    builder.AddFile(item.Key, $"out/{target}/{item.Value}");
+            }
+            catch (FileNotFoundException exc)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+
+                Console.WriteLine($"An error occurred:\n\r{exc.Message}");
+                Console.ResetColor();
+
+                return 1;
+            }
 
             builder.Build($"out/{target}/spark.iso");
 
