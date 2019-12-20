@@ -1,0 +1,6 @@
+[submodule "SparkBoot"]
+	path = SparkBoot
+	url = https://github.com/Official-Spark-OS/SparkBoot.git
+[submodule "SparkKernel"]
+	path = SparkKernel
+	url = https://github.com/Official-Spark-OS/SparkKernel.git
