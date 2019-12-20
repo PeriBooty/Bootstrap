@@ -11,7 +11,7 @@ namespace Bootstrap
 {
     class Program
     {
-        static readonly string[] projects = { "SparkKernel", "SparkKernel" };
+        static readonly string[] projects = { "SparkBoot", "SparkKernel" };
         static readonly Dictionary<string, string> files = new Dictionary<string, string>()
         {
             { "/EFI/BOOT/BOOTX64.EFI", "SparkBoot/BOOTX64.EFI" },
@@ -41,7 +41,7 @@ namespace Bootstrap
             Console.WriteLine("==> Making directories...");
             Console.ResetColor();
 
-            Directory.CreateDirectory($"out/{target}/system");
+            Directory.CreateDirectory($"out/{target}");
 
             Console.ForegroundColor = ConsoleColor.Magenta;
 
@@ -50,6 +50,9 @@ namespace Bootstrap
 
             foreach (string project_path in projects)
             {
+                Console.ResetColor();
+                Console.WriteLine($"Building project '{project_path}'");
+
                 DirectoryInfo project = new DirectoryInfo($"out/{target}/{project_path}");
                 if (!project.Exists)
                     Directory.CreateDirectory($"out/{target}/{project_path}");
@@ -73,7 +76,7 @@ namespace Bootstrap
 
                 try
                 {
-                    ProcessStartInfo cmake = new ProcessStartInfo("cmake.exe", $"-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_ASM_NASM_COMPILER=nasm -G \"Ninja\" ../../../{project_path}");
+                    ProcessStartInfo cmake = new ProcessStartInfo("cmake", $"-DCMAKE_SYSTEM_NAME=Generic -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_ASM_NASM_COMPILER=nasm -G \"Ninja\" ../../../{project_path}");
                     Process cmake_p = Process.Start(cmake);
 
                     cmake_p.WaitForExit();
@@ -89,7 +92,7 @@ namespace Bootstrap
                     }
 
 
-                    ProcessStartInfo ninja = new ProcessStartInfo("ninja.exe");
+                    ProcessStartInfo ninja = new ProcessStartInfo("ninja");
                     Process ninja_p = Process.Start(ninja);
 
                     ninja_p.WaitForExit();
@@ -115,7 +118,7 @@ namespace Bootstrap
                     return 1;
                 }
 
-                Directory.SetCurrentDirectory("../../");
+                Directory.SetCurrentDirectory("../../../");
             }
 
             Console.ForegroundColor = ConsoleColor.Blue;
