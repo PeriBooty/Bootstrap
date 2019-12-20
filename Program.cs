@@ -12,8 +12,8 @@ namespace Bootstrap
         static readonly string[] projects = { "SparkBoot", "SparkKernel" };
         static readonly Dictionary<string, string> files = new Dictionary<string, string>()
         {
-            { "EFI/BOOT/BOOTX64.EFI", "SparkBoot/BOOTX64.EFI" },
-            { "system/kernel.bin", "SparkKernel/kernel.bin" }
+            { "EFI\\BOOT\\BOOTX64.EFI", "SparkBoot/BOOTX64.EFI" },
+            { "system\\kernel.bin", "SparkKernel/kernel.bin" }
         };
 
         static int Main(string[] args)
