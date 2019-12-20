@@ -1,8 +1,5 @@
 ﻿using DiscUtils.Complete;
-using DiscUtils.Fat;
-using DiscUtils.Partitions;
-using DiscUtils.Raw;
-using DiscUtils.Streams;
+using DiscUtils.Iso9660;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -127,20 +124,16 @@ namespace Bootstrap
 
             SetupHelper.SetupComplete();
 
-            using Stream img = File.Create($"out/{target}/spark.img");
-
-            Disk disk = Disk.Initialize(img, DiscUtils.Streams.Ownership.None, 30 * 1024 * 1024);
-            GuidPartitionTable.Initialize(disk, WellKnownPartitionType.WindowsFat);
-
-            using FatFileSystem fs = FatFileSystem.FormatPartition(disk, 0, string.Empty);
+            CDBuilder builder = new CDBuilder()
+            {
+                UseJoliet = true,
+                VolumeIdentifier = "SPARK_OS"
+            };
 
             foreach (KeyValuePair<string, string> item in files)
-            {
-                fs.CreateDirectory(new FileInfo(item.Key).Directory.FullName.Replace(Directory.GetCurrentDirectory(), ""));
-                using SparseStream stream = fs.OpenFile(item.Key, FileMode.OpenOrCreate, FileAccess.Write);
-                stream.Seek(0, SeekOrigin.Begin);
-                stream.Write(File.ReadAllBytes($"out/{target}/{item.Value}"));
-            }
+                builder.AddFile(item.Key, $"out/{target}/{item.Value}");
+
+            builder.Build($"out/{target}/spark.iso");
 
             Console.ForegroundColor = ConsoleColor.Green;
 
