@@ -2,6 +2,7 @@
 using DiscUtils.Fat;
 using DiscUtils.Partitions;
 using DiscUtils.Raw;
+using DiscUtils.Streams;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,8 +15,8 @@ namespace Bootstrap
         static readonly string[] projects = { "SparkBoot", "SparkKernel" };
         static readonly Dictionary<string, string> files = new Dictionary<string, string>()
         {
-            { "EFI/BOOT/BOOTX64.EFI", "SparkBoot/BOOTX64.EFI" },
-            { "system/kernel.bin", "SparkKernel/kernel.bin" }
+            { "EFI\\BOOT\\BOOTX64.EFI", "SparkBoot\\BOOTX64.EFI" },
+            { "system\\kernel.bin", "SparkKernel\\kernel.bin" }
         };
 
         static int Main(string[] args)
@@ -134,7 +135,12 @@ namespace Bootstrap
             using FatFileSystem fs = FatFileSystem.FormatPartition(disk, 0, string.Empty);
 
             foreach (KeyValuePair<string, string> item in files)
-                fs.CopyFile($"out/{target}/{item.Key}", item.Value, true);
+            {
+                fs.CreateDirectory(new FileInfo(item.Key).Directory.FullName.Replace(Directory.GetCurrentDirectory(), ""));
+                using SparseStream stream = fs.OpenFile(item.Key, FileMode.OpenOrCreate, FileAccess.Write);
+                stream.Seek(0, SeekOrigin.Begin);
+                stream.Write(File.ReadAllBytes($"out/{target}/{item.Value}"));
+            }
 
             Console.ForegroundColor = ConsoleColor.Green;
 
