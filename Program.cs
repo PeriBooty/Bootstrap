@@ -14,14 +14,12 @@ namespace Bootstrap
         static readonly string[] projects = { "SparkBoot", "SparkKernel" };
         static readonly Dictionary<string, string> files = new Dictionary<string, string>()
         {
-            { "/EFI/BOOT/BOOTX64.EFI", "SparkBoot/BOOTX64.EFI" },
-            { "/system/kernel.bin", "SparkKernel/kernel.bin" }
+            { "EFI/BOOT/BOOTX64.EFI", "SparkBoot/BOOTX64.EFI" },
+            { "system/kernel.bin", "SparkKernel/kernel.bin" }
         };
 
         static int Main(string[] args)
         {
-            Directory.SetCurrentDirectory("../../../");
-            Console.WriteLine(Directory.GetCurrentDirectory());
             string target = args.Length > 0 ? args[0] : "x86_64-Debug";
             DirectoryInfo target_dir = new DirectoryInfo($"out/{target}");
 
@@ -136,7 +134,7 @@ namespace Bootstrap
             using FatFileSystem fs = FatFileSystem.FormatPartition(disk, 0, string.Empty);
 
             foreach (KeyValuePair<string, string> item in files)
-                fs.CopyFile($"out/{target}/{item.Value}", item.Key, true);
+                fs.CopyFile($"out/{target}/{item.Key}", item.Value, true);
 
             Console.ForegroundColor = ConsoleColor.Green;
 
