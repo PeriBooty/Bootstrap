@@ -1,10 +1,6 @@
-# Spark-OS
-The main repository for the Spark Operating System.
-
+# Bootstrap
 ## Dependencies
-- xorriso
-- grub-common
-- grub-pc-bin
+- dotnet
 
 ## Bundling ISO
-To get a bootable ISO simply run the `mkiso` Python script using Python 3.
+To get a bootable ISO simply build the project and run the executable.
